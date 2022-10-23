@@ -23,8 +23,7 @@ public class TodosController : ControllerBase
     private readonly ISender _sender;
     private readonly ILogger<TodosController> _logger;
 
-    // TODO: Fetch this dynamically from HttpContext
-    private string BaseUrl => "https://localhost:5001";
+    private string BaseUrl => $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
     public TodosController(
         ISender sender,
