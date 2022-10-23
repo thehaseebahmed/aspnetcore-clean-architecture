@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Starter.Application.Todo.Commands.CreateTodo;
 using Starter.Application.Todo.Commands.DeleteAllTodos;
+using Starter.Application.Todo.Commands.DeleteTodos;
+using Starter.Application.Todo.Commands.UpdateTodo;
 using Starter.Application.Todo.Queries.GetTodo;
 using Starter.Application.Todo.Queries.GetTodoById;
 using Starter.Application.ViewModels;
@@ -60,6 +62,7 @@ public class TodosController : ControllerBase
         [FromRoute] Guid id
     )
     {
+        await _sender.Send(new DeleteTodo(id));
         return Ok();
     }
 
@@ -70,6 +73,10 @@ public class TodosController : ControllerBase
     )
     {
         var response = await _sender.Send(query);
+        foreach (var todo in response.Data)
+        {
+            todo.Url = ReplaceBaseUrlInUrl(todo.Url, BaseUrl);
+        }
 
         // NOTE: Returning response.Data to satisfy todobackend.com test specs but real-life projects
         // should return the actual response with count + data.
@@ -88,12 +95,18 @@ public class TodosController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPut("{id}")]
-    [ProducesResponseType(typeof(CommandResultViewModel), StatusCodes.Status201Created)]
+    [HttpPatch("{id}")]
+    [ProducesResponseType(typeof(UpdateTodoViewModel), StatusCodes.Status200OK)]
     public async Task<IActionResult> UpdateExistingTodo(
+        [FromRoute] Guid id,
+        [FromBody] UpdateTodo command
     )
     {
-        return Ok();
+        command.Id = id;
+        var response = await _sender.Send(command);
+        response.Url = ReplaceBaseUrlInUrl(response.Url, BaseUrl);
+
+        return Ok(response);
     }
 
     private static string ReplaceBaseUrlInUrl(string url, string baseUrl)

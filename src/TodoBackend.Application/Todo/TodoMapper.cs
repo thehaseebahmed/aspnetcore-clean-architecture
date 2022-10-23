@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Starter.Application.Todo.Commands.CreateTodo;
+using Starter.Application.Todo.Commands.UpdateTodo;
 using Starter.Application.Todo.Queries.GetTodo;
 using Starter.Application.Todo.Queries.GetTodoById;
+using Starter.Application.ViewModels;
 
 namespace Starter.Application.Todo;
 
@@ -28,6 +30,17 @@ public class TodoMapper : Profile
 
         // GetTodoById
         CreateMap<Domain.Entities.Todo, GetTodoByIdViewModel>()
+            .ForMember(
+                dst => dst.Url,
+                src => src.MapFrom(opt => baseUrlPattern + opt.Id)
+            );
+
+        // UpdateTodo
+        CreateMap<UpdateTodo, Domain.Entities.Todo>()
+            .ForAllMembers(opt => opt
+                .Condition((src, dest, mem) => mem != null)
+            );
+        CreateMap<Domain.Entities.Todo, UpdateTodoViewModel>()
             .ForMember(
                 dst => dst.Url,
                 src => src.MapFrom(opt => baseUrlPattern + opt.Id)
