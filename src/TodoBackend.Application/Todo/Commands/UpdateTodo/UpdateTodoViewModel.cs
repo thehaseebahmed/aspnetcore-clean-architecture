@@ -3,6 +3,7 @@
 public record UpdateTodoViewModel(
     Guid Id,
     bool Completed,
+    int Order,
     string Title
 )
 {

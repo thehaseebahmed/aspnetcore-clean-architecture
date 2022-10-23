@@ -7,6 +7,6 @@ public class Todo : IEntity
 {
     public Guid Id { get; set; } = Guid.NewGuid();
     public bool Completed { get; set; }
+    public int Order { get; set; }
     public string Title { get; set; }
-    public string Url => $"https://localhost:44310/api/v1/todo/{Id}";
 }

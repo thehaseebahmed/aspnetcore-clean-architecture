@@ -6,6 +6,7 @@ namespace Starter.Application.Todo.Commands.UpdateTodo;
 
 public record UpdateTodo(
     bool? Completed,
+    int? Order,
     string? Title
 ) : IRequest<UpdateTodoViewModel>
 {

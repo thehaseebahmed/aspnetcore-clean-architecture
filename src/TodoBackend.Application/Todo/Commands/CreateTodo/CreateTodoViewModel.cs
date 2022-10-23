@@ -3,6 +3,7 @@
 public record CreateTodoViewModel(
     Guid Id,
     bool Completed,
+    int Order,
     string Title
 )
 {
